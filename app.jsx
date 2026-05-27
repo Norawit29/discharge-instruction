@@ -804,7 +804,7 @@ function QrScreen({ accent, result, onBack, onNew }) {
   }, []);
 
   const shortUrl = qrUrl
-    ? qrUrl.replace(/^https?:\/\//, '')
+    ? qrUrl.replace(/^https?:\/\//, '').split('/')[0]
     : '…';
 
   return (
@@ -848,22 +848,8 @@ function QrScreen({ accent, result, onBack, onNew }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           boxShadow: '0 1px 0 rgba(15,20,25,0.02)',
         }}>
-          <div style={{ position: 'relative', padding: 8, background: '#fff' }}>
-            <FakeQR value={qrUrl || ''} size={196} fg="#0F1419" bg="#ffffff" />
-            {qrUrl && (
-              <div style={{
-                position: 'absolute', top: '50%', left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 32, height: 32, borderRadius: 7,
-                background: accent.hex,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '3px solid #fff',
-              }}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2 7.5l2.8 2.5 7-7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-            )}
+          <div style={{ padding: 8, background: '#fff' }}>
+            <FakeQR value={qrUrl || ''} size={210} fg="#0F1419" bg="#ffffff" />
           </div>
           <div style={{ fontSize: 12.5, color: 'var(--ink-2)', marginTop: 14, fontWeight: 500 }}>
             ผู้ป่วย / ญาติสแกนเพื่อเปิดหน้าคำแนะนำ
