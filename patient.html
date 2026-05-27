@@ -94,22 +94,33 @@
     }
 
     function render(d) {
-      document.title = esc(d.diagnosisTitle) + ' · คำแนะนำกลับบ้าน';
-      var careHtml = (d.care || []).map(function(c) {
+      // Support both full keys (local serve.py) and abbreviated keys (Vercel QR URL)
+      var title = d.diagnosisTitle || d.t || '';
+      var care = d.care || d.c || [];
+      var returnIf = d.returnIf || d.r || [];
+      var fu = d.followUp || d.f || {};
+      var fuWhen = fu.when || fu.w || '';
+      var fuWhere = fu.where || fu.x || '';
+      var issuedAt = d.issuedAt || d.i || '';
+
+      document.title = esc(title) + ' · คำแนะนำกลับบ้าน';
+      var careHtml = care.map(function(c) {
         return '<li><span class="dot"></span><span>' + esc(c) + '</span></li>';
       }).join('');
-      var returnHtml = (d.returnIf || []).map(function(r) {
+      var returnHtml = returnIf.map(function(r) {
         return '<li>' + warnIcon + '<span>' + esc(r) + '</span></li>';
       }).join('');
-      var fu = d.followUp || {};
+      var summaryHtml = (d.summary)
+        ? '<p class="summary">' + esc(d.summary) + '</p>'
+        : '';
       document.getElementById('app').innerHTML =
         '<div class="header">' +
           '<img src="/assets/chula-logo.png" alt="โรงพยาบาลจุฬาลงกรณ์ สภากาชาดไทย" class="logo">' +
-          '<div class="issued-at">' + esc(d.issuedAt) + '</div>' +
+          '<div class="issued-at">' + esc(issuedAt) + '</div>' +
         '</div>' +
         '<div class="hero">' +
-          '<h1 class="diagnosis">' + esc(d.diagnosisTitle) + '</h1>' +
-          '<p class="summary">' + esc(d.summary) + '</p>' +
+          '<h1 class="diagnosis">' + esc(title) + '</h1>' +
+          summaryHtml +
         '</div>' +
         '<section class="section">' +
           '<div class="section-header"><span class="section-num">01</span><h3>การดูแลตัวที่บ้าน</h3></div>' +
@@ -124,13 +135,13 @@
           '<div class="followup-card">' +
             '<div class="followup-icon">' + calIcon + '</div>' +
             '<div>' +
-              '<div class="followup-when">' + esc(fu.when) + '</div>' +
-              '<div class="followup-where">' + esc(fu.where) + '</div>' +
+              '<div class="followup-when">' + esc(fuWhen) + '</div>' +
+              '<div class="followup-where">' + esc(fuWhere) + '</div>' +
             '</div>' +
           '</div>' +
         '</section>' +
         '<div class="footer">' +
-          '<p>ออกเมื่อ ' + esc(d.issuedAt) + ' · ห้องฉุกเฉิน</p>' +
+          '<p>ออกเมื่อ ' + esc(issuedAt) + ' · ห้องฉุกเฉิน</p>' +
           '<p>สร้างโดย AI · ตรวจสอบโดยแพทย์เจ้าของไข้</p>' +
           '<p class="disclaimer">ข้อมูลนี้เป็นเพียงคำแนะนำเบื้องต้น หากมีเหตุฉุกเฉินโทร 1669 หรือห้องฉุกเฉินทันที</p>' +
         '</div>';

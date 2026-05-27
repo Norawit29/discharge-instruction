@@ -6,7 +6,7 @@ function RealQR({ value = '', size = 168, fg = '#0F1419', bg = '#fff' }) {
   React.useEffect(() => {
     if (!value || !window.qrcode) return;
     try {
-      const qr = window.qrcode(0, 'M'); // auto version, medium error correction
+      const qr = window.qrcode(0, 'L'); // L = max capacity (no logo overlay)
       qr.addData(value, 'Byte');
       qr.make();
       const n = qr.getModuleCount();

@@ -1,3 +1,5 @@
+// Encode discharge data as compact base64url in the patient URL.
+// Abbreviated keys + truncation keep the QR within v40-L capacity (~2953 bytes).
 module.exports = function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -7,9 +9,26 @@ module.exports = function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
   try {
-    const data = req.body || {};
-    // base64url without relying on Buffer 'base64url' encoding (works on all Node versions)
-    const b64 = Buffer.from(JSON.stringify(data), 'utf8')
+    const d = req.body || {};
+
+    function trunc(s, n) {
+      if (!s || typeof s !== 'string') return '';
+      return s.length > n ? s.slice(0, n) + '…' : s;
+    }
+
+    // Abbreviated keys, no summary — keeps JSON under ~2000 bytes for typical AI output
+    const compact = {
+      t: trunc(d.diagnosisTitle, 50),
+      c: (d.care || []).slice(0, 5).map(function(s) { return trunc(s, 70); }),
+      r: (d.returnIf || []).slice(0, 5).map(function(s) { return trunc(s, 60); }),
+      f: {
+        w: trunc((d.followUp || {}).when, 35),
+        x: trunc((d.followUp || {}).where, 50),
+      },
+      i: trunc(d.issuedAt, 30),
+    };
+
+    const b64 = Buffer.from(JSON.stringify(compact), 'utf8')
       .toString('base64')
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
