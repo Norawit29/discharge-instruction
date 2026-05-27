@@ -87,6 +87,7 @@ function PatientView({ data, accent, editable, onChange }) {
     edit({ ...D, [k]: arr });
   };
   const updateFollow = (k, v) => edit && edit({ ...D, followUp: { ...D.followUp, [k]: v } });
+  const addItem = (k) => edit && edit({ ...D, [k]: [...D[k], ''] });
 
   const Section = ({ title, n, children }) => (
     <section style={{ padding: '0 22px', marginBottom: 28 }}>
@@ -203,6 +204,20 @@ function PatientView({ data, accent, editable, onChange }) {
             </li>
           ))}
         </ul>
+        {editable && (
+          <button onClick={() => addItem('care')} style={{
+            marginTop: 8, width: '100%', padding: '9px 14px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            background: 'transparent', border: `1.5px dashed ${A}`,
+            borderRadius: 12, cursor: 'pointer', fontSize: 13, fontWeight: 600,
+            color: A, fontFamily: 'inherit',
+          }}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            เพิ่มคำแนะนำ
+          </button>
+        )}
       </Section>
 
       {/* Return precautions */}
@@ -236,6 +251,20 @@ function PatientView({ data, accent, editable, onChange }) {
             ))}
           </ul>
         </div>
+        {editable && (
+          <button onClick={() => addItem('returnIf')} style={{
+            marginTop: 8, width: '100%', padding: '9px 14px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            background: 'transparent', border: '1.5px dashed oklch(0.62 0.14 35)',
+            borderRadius: 12, cursor: 'pointer', fontSize: 13, fontWeight: 600,
+            color: 'oklch(0.45 0.12 35)', fontFamily: 'inherit',
+          }}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 2v10M2 7h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            เพิ่มสัญญาณเตือน
+          </button>
+        )}
       </Section>
 
       {/* Follow-up */}
