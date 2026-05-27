@@ -109,8 +109,8 @@ function PatientView({ data, accent, editable, onChange }) {
       background: '#F7F6F3',
       overflowY: 'auto',
       fontFamily: "'IBM Plex Sans Thai', 'Plus Jakarta Sans', system-ui",
-      paddingTop: 60,
-      paddingBottom: editable ? 110 : 60,
+      paddingTop: 'env(safe-area-inset-top, 0px)',
+      paddingBottom: editable ? 110 : 40,
     }}>
       {/* Top header: hospital logo */}
       <div style={{

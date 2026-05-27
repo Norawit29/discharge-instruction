@@ -345,73 +345,10 @@ function FormSection({ n, title, hint, children }) {
   );
 }
 
-// ─── API Key Modal ───────────────────────────────────────────
-function ApiKeyModal({ accent, onSave, onCancel }) {
-  const [val, setVal] = useState('');
-  return (
-    <div style={{
-      position: 'absolute', inset: 0, zIndex: 100,
-      background: 'rgba(15,20,25,0.45)',
-      display: 'flex', alignItems: 'flex-end',
-    }}>
-      <div style={{
-        width: '100%',
-        background: 'var(--surface)',
-        borderRadius: '20px 20px 0 0',
-        padding: '24px 22px 32px',
-      }}>
-        <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--ink)', marginBottom: 6 }}>
-          OpenAI API Key
-        </div>
-        <div style={{ fontSize: 12.5, color: 'var(--ink-3)', marginBottom: 16, lineHeight: 1.5 }}>
-          ใช้สำหรับสร้างคำแนะนำ · เก็บในเครื่องนี้เท่านั้น ไม่ส่งไปที่อื่น
-        </div>
-        <input
-          type="password"
-          value={val}
-          onChange={e => setVal(e.target.value)}
-          placeholder="sk-..."
-          autoFocus
-          style={{
-            width: '100%', padding: '12px 14px',
-            background: '#fff', border: '1px solid var(--line-strong)',
-            borderRadius: 12, fontSize: 14, fontFamily: 'inherit',
-            color: 'var(--ink)', outline: 'none', marginBottom: 14,
-          }}
-          onKeyDown={e => { if (e.key === 'Enter' && val.trim()) onSave(val.trim()); }}
-        />
-        <Stack gap={8}>
-          <button
-            disabled={!val.trim()}
-            onClick={() => onSave(val.trim())}
-            style={{
-              width: '100%', height: 48,
-              background: val.trim() ? accent.hex : '#E8E6DF',
-              color: val.trim() ? '#fff' : 'var(--ink-3)',
-              border: 'none', borderRadius: 12,
-              fontSize: 14, fontWeight: 600, cursor: val.trim() ? 'pointer' : 'not-allowed',
-              fontFamily: 'inherit',
-            }}
-          >บันทึก API Key</button>
-          {onCancel && (
-            <button
-              onClick={onCancel}
-              style={{
-                width: '100%', height: 44,
-                background: 'transparent', color: 'var(--ink-3)',
-                border: '1px solid var(--line-strong)', borderRadius: 12,
-                fontSize: 13.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-              }}
-            >ยกเลิก</button>
-          )}
-        </Stack>
-      </div>
-    </div>
-  );
-}
+
 
 // ─── HOME (form) ─────────────────────────────────────────────
-function HomeScreen({ accent, onGenerate, onSettings }) {
+function HomeScreen({ accent, onGenerate }) {
   const [sex, setSex] = useState(null);
   const [ageRange, setAgeRange] = useState(null);
   const [query, setQuery] = useState('');
@@ -442,11 +379,11 @@ function HomeScreen({ accent, onGenerate, onSettings }) {
   return (
     <div className="device-scroll" style={{
       position: 'absolute', inset: 0, overflowY: 'auto',
-      paddingTop: 56, paddingBottom: 8,
+      paddingTop: 'env(safe-area-inset-top, 0px)', paddingBottom: 8,
       background: 'var(--surface)',
     }}>
       {/* Logo */}
-      <div style={{ padding: '14px 22px 4px', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ padding: '20px 22px 4px', display: 'flex', justifyContent: 'center' }}>
         <img
           src="assets/chula-logo.png"
           alt="โรงพยาบาลจุฬาลงกรณ์ สภากาชาดไทย"
@@ -456,29 +393,12 @@ function HomeScreen({ accent, onGenerate, onSettings }) {
 
       {/* Title + subtitle */}
       <div style={{ padding: '16px 22px 18px' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <h1 style={{
-            margin: 0, fontSize: 23, fontWeight: 700,
-            letterSpacing: -0.2, color: 'var(--ink)', lineHeight: 1.25,
-          }}>
-            คำแนะนำผู้ป่วยกลับบ้าน
-          </h1>
-          <button
-            onClick={onSettings}
-            title="ตั้งค่า API Key"
-            style={{
-              background: 'transparent', border: 'none',
-              color: 'var(--ink-3)', cursor: 'pointer',
-              padding: 4, borderRadius: 8, flexShrink: 0, marginTop: 2,
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-              <circle cx="10" cy="10" r="3" stroke="currentColor" strokeWidth="1.6"/>
-              <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42"
-                stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-            </svg>
-          </button>
-        </div>
+        <h1 style={{
+          margin: 0, fontSize: 23, fontWeight: 700,
+          letterSpacing: -0.2, color: 'var(--ink)', lineHeight: 1.25,
+        }}>
+          คำแนะนำผู้ป่วยกลับบ้าน
+        </h1>
         <p style={{
           margin: '8px 0 0', fontSize: 13.5, lineHeight: 1.55,
           color: 'var(--ink-2)',
@@ -744,10 +664,10 @@ function GeneratingScreen({ accent, formData, apiKey, onDone, onError }) {
     return (
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'var(--surface)', paddingTop: 56,
+        background: 'var(--surface)', paddingTop: 'env(safe-area-inset-top, 0px)',
         display: 'flex', flexDirection: 'column',
       }}>
-        <div style={{ padding: '14px 22px 4px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ padding: '20px 22px 4px', display: 'flex', justifyContent: 'center' }}>
           <img src="assets/chula-logo.png" alt="" style={{ height: 48, width: 'auto' }} />
         </div>
         <div style={{
@@ -791,7 +711,7 @@ function GeneratingScreen({ accent, formData, apiKey, onDone, onError }) {
     <div style={{
       position: 'absolute', inset: 0,
       background: 'var(--surface)',
-      paddingTop: 56,
+      paddingTop: 'env(safe-area-inset-top, 0px)',
       display: 'flex', flexDirection: 'column',
     }}>
       <div style={{ padding: '14px 22px 4px', display: 'flex', justifyContent: 'center' }}>
@@ -889,10 +809,10 @@ function QrScreen({ accent, result, onBack, onNew }) {
   return (
     <div className="device-scroll" style={{
       position: 'absolute', inset: 0, overflowY: 'auto',
-      paddingTop: 56,
+      paddingTop: 'env(safe-area-inset-top, 0px)',
       background: 'var(--surface)',
     }}>
-      <div style={{ padding: '14px 22px 4px', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ padding: '20px 22px 4px', display: 'flex', justifyContent: 'center' }}>
         <img
           src="assets/chula-logo.png"
           alt="โรงพยาบาลจุฬาลงกรณ์ สภากาชาดไทย"
@@ -1030,27 +950,15 @@ function PatientScreen({ accent, result, onResultChange, onConfirm, onNew }) {
 
 // ─── App ────────────────────────────────────────────────────
 function App() {
-  const [t, setTweak] = useTweaks(window.TWEAK_DEFAULTS);
-  const accent = ACCENTS[t.accent] || ACCENTS.teal;
+  const accent = ACCENTS.forest;
 
   useEffect(() => {
     document.documentElement.style.setProperty('--accent', accent.hex);
     document.documentElement.style.setProperty('--accent-soft', accent.soft);
-  }, [accent]);
+  }, []);
 
-  const normalizeScreen = (s) => s === 'result' ? 'qr' : (s || 'home');
-  const [screen, setScreen] = useState(normalizeScreen(t.screen));
-  useEffect(() => { setScreen(normalizeScreen(t.screen)); }, [t.screen]);
-
-  // API key — env var injected by serve.py takes priority, then localStorage
-  const [apiKey, setApiKey] = useState(() => window.OPENAI_API_KEY || localStorage.getItem('discharge_openai_key') || '');
-  const [showKeyModal, setShowKeyModal] = useState(false);
-
-  const saveKey = (k) => {
-    localStorage.setItem('discharge_openai_key', k);
-    setApiKey(k);
-    setShowKeyModal(false);
-  };
+  const [screen, setScreen] = useState('home');
+  const apiKey = window.OPENAI_API_KEY || '';
 
   const [formData, setFormData] = useState({
     sex: 'ชาย',
@@ -1058,112 +966,43 @@ function App() {
     diagnosis: COMMON_DX[2],
   });
 
-  // AI result replaces the mock; cleared on new form submission
   const [aiResult, setAiResult] = useState(null);
   const fallback = useMemo(() => buildResult(formData), [formData]);
   const [resultOverrides, setResultOverrides] = useState(null);
   const liveResult = resultOverrides || aiResult || fallback;
   useEffect(() => { setAiResult(null); setResultOverrides(null); }, [formData]);
 
-  const go = (s) => { setScreen(s); setTweak('screen', s); };
+  const go = (s) => setScreen(s);
 
   const handleGenerate = (form) => {
     setFormData(form);
-    if (!apiKey) { setShowKeyModal(true); return; }
     go('generating');
   };
 
   return (
-    <>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-        <div style={{ position: 'relative' }}>
-          <IOSDevice dark={false}>
-            <div style={{ position: 'relative', width: '100%', height: '100%' }} data-screen-label={`Screen ${screen}`}>
-              {screen === 'home' && (
-                <HomeScreen
-                  accent={accent}
-                  onGenerate={handleGenerate}
-                  onSettings={() => setShowKeyModal(true)}
-                />
-              )}
-              {showKeyModal && screen === 'home' && (
-                <ApiKeyModal
-                  accent={accent}
-                  onSave={saveKey}
-                  onCancel={apiKey ? () => setShowKeyModal(false) : null}
-                />
-              )}
-              {screen === 'generating' && (
-                <GeneratingScreen
-                  accent={accent}
-                  formData={formData}
-                  apiKey={apiKey}
-                  onDone={(result) => { setAiResult(result); go('patient'); }}
-                  onError={() => go('home')}
-                />
-              )}
-              {screen === 'patient' && (
-                <PatientScreen
-                  accent={accent}
-                  result={liveResult}
-                  onResultChange={setResultOverrides}
-                  onConfirm={() => go('qr')}
-                  onNew={() => go('home')}
-                />
-              )}
-              {screen === 'qr' && (
-                <QrScreen
-                  accent={accent}
-                  result={liveResult}
-                  onBack={() => go('patient')}
-                  onNew={() => go('home')}
-                />
-              )}
-            </div>
-          </IOSDevice>
-        </div>
-
-        {/* Screen flow strip */}
-        <div style={{
-          display: 'flex', gap: 6, padding: '6px 10px',
-          background: '#fff', borderRadius: 999,
-          border: '1px solid var(--line)',
-          boxShadow: '0 1px 3px rgba(15,20,25,0.04)',
-        }}>
-          {[
-            ['home', 'หน้าหลัก'],
-            ['generating', 'สร้าง'],
-            ['patient', 'คำแนะนำ'],
-            ['qr', 'QR'],
-          ].map(([k, label]) => (
-            <button key={k}
-              onClick={() => go(k)}
-              style={{
-                background: screen === k ? accent.hex : 'transparent',
-                color: screen === k ? '#fff' : 'var(--ink-2)',
-                border: 'none',
-                padding: '7px 12px', borderRadius: 999,
-                fontSize: 11.5, fontWeight: 600,
-                letterSpacing: 0.1, cursor: 'pointer', fontFamily: 'inherit',
-              }}>{label}</button>
-          ))}
-        </div>
-      </div>
-
-      <TweaksPanel title="Tweaks">
-        <TweakSection label="แบรนด์">
-          <TweakColor
-            label="สีหลัก"
-            value={accent.hex}
-            options={Object.values(ACCENTS).map(a => a.hex)}
-            onChange={hex => {
-              const k = Object.keys(ACCENTS).find(k => ACCENTS[k].hex === hex);
-              if (k) setTweak('accent', k);
-            }}
-          />
-        </TweakSection>
-      </TweaksPanel>
-    </>
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      {screen === 'home' && (
+        <HomeScreen accent={accent} onGenerate={handleGenerate} />
+      )}
+      {screen === 'generating' && (
+        <GeneratingScreen
+          accent={accent} formData={formData} apiKey={apiKey}
+          onDone={(result) => { setAiResult(result); go('patient'); }}
+          onError={() => go('home')}
+        />
+      )}
+      {screen === 'patient' && (
+        <PatientScreen
+          accent={accent} result={liveResult}
+          onResultChange={setResultOverrides}
+          onConfirm={() => go('qr')}
+          onNew={() => go('home')}
+        />
+      )}
+      {screen === 'qr' && (
+        <QrScreen accent={accent} result={liveResult} onBack={() => go('patient')} onNew={() => go('home')} />
+      )}
+    </div>
   );
 }
 
