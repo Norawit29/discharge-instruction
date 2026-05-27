@@ -794,12 +794,15 @@ function QrScreen({ accent, result, onBack, onNew }) {
       body: JSON.stringify(payload),
     })
       .then(r => r.json())
-      .then(({ url }) => setQrUrl(url))
+      .then(({ url }) => {
+        if (url) {
+          setQrUrl(url);
+        } else {
+          throw new Error('no url');
+        }
+      })
       .catch(() => {
-        // fallback: build URL without server
-        const ip = window.LOCAL_IP || 'localhost';
-        const port = window.LOCAL_PORT || 8765;
-        setQrUrl(`http://${ip}:${port}/`);
+        setQrUrl(window.location.origin + '/');
       });
   }, []);
 
