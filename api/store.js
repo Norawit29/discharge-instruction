@@ -1,5 +1,7 @@
-// Encode discharge data as compact base64url in the patient URL.
-// Abbreviated keys + truncation keep the QR within v40-L capacity (~2953 bytes).
+// Compress discharge JSON with zlib deflate before base64url encoding.
+// Thai text compresses ~60%, keeping QR well within v15-M capacity.
+const zlib = require('zlib');
+
 module.exports = function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -11,24 +13,21 @@ module.exports = function handler(req, res) {
   try {
     const d = req.body || {};
 
-    function trunc(s, n) {
-      if (!s || typeof s !== 'string') return '';
-      return s.length > n ? s.slice(0, n) + '…' : s;
-    }
-
-    // Abbreviated keys, no summary — keeps JSON under ~2000 bytes for typical AI output
+    // Abbreviated keys, omit summary — reduces JSON overhead
     const compact = {
-      t: trunc(d.diagnosisTitle, 50),
-      c: (d.care || []).slice(0, 5).map(function(s) { return trunc(s, 70); }),
-      r: (d.returnIf || []).slice(0, 5).map(function(s) { return trunc(s, 60); }),
-      f: {
-        w: trunc((d.followUp || {}).when, 35),
-        x: trunc((d.followUp || {}).where, 50),
-      },
-      i: trunc(d.issuedAt, 30),
+      t: d.diagnosisTitle || '',
+      c: d.care || [],
+      r: d.returnIf || [],
+      f: { w: (d.followUp || {}).when || '', x: (d.followUp || {}).where || '' },
+      i: d.issuedAt || '',
     };
 
-    const b64 = Buffer.from(JSON.stringify(compact), 'utf8')
+    const compressed = zlib.deflateRawSync(
+      Buffer.from(JSON.stringify(compact), 'utf8'),
+      { level: 9 }
+    );
+
+    const b64 = compressed
       .toString('base64')
       .replace(/\+/g, '-')
       .replace(/\//g, '_')

@@ -156,19 +156,26 @@
         '</div>';
     }
 
+    function decompressBase64url(b64url) {
+      var b64 = b64url.replace(/-/g, '+').replace(/_/g, '/');
+      var binary = atob(b64);
+      var bytes = new Uint8Array(binary.length);
+      for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      var ds = new DecompressionStream('deflate-raw');
+      var writer = ds.writable.getWriter();
+      writer.write(bytes);
+      writer.close();
+      return new Response(ds.readable).arrayBuffer().then(function(buf) {
+        return JSON.parse(new TextDecoder().decode(buf));
+      });
+    }
+
     if (window.__DISCHARGE__) {
       render(window.__DISCHARGE__);
     } else {
-      // Vercel: data encoded as base64url in ?d= query param
       var d = new URLSearchParams(location.search).get('d');
       if (d) {
-        try {
-          var b64 = d.replace(/-/g, '+').replace(/_/g, '/');
-          var binary = atob(b64);
-          var bytes = new Uint8Array(binary.length);
-          for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-          render(JSON.parse(new TextDecoder().decode(bytes)));
-        } catch(e) { showError(); }
+        decompressBase64url(d).then(render).catch(showError);
       } else {
         showError();
       }
