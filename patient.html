@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>คำแนะนำกลับบ้าน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #0F1419;
+      --ink-2: #3B4148;
+      --ink-3: #6B7178;
+      --line: rgba(15,20,25,0.08);
+      --accent: oklch(0.48 0.07 155);
+    }
+    body {
+      font-family: 'IBM Plex Sans Thai', system-ui, -apple-system, sans-serif;
+      background: #ECEAE3;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.4;
+    }
+    .page { max-width: 520px; margin: 0 auto; background: #F7F6F3; min-height: 100vh; }
+    .header {
+      padding: 24px 22px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .logo { height: 52px; width: auto; display: block; }
+    .issued-at { font-family: monospace; font-size: 11px; color: var(--ink-3); letter-spacing: 0.3px; }
+    .hero { padding: 22px 22px 24px; }
+    .diagnosis { font-size: 26px; font-weight: 700; line-height: 1.25; letter-spacing: -0.3px; color: var(--ink); }
+    .summary { margin-top: 10px; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+    .section { padding: 0 22px 28px; }
+    .section-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+    .section-num { font-family: monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; font-weight: 600; }
+    .section-header h3 { font-size: 17px; font-weight: 700; color: var(--ink); }
+    .care-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .care-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #fff; border: 1px solid var(--line); border-radius: 12px;
+      padding: 12px 14px; font-size: 14.5px; line-height: 1.5; color: var(--ink);
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 8px; flex-shrink: 0; }
+    .warn-box {
+      background: oklch(0.96 0.03 60); border: 1px solid oklch(0.88 0.05 50);
+      border-radius: 14px; padding: 14px 16px;
+    }
+    .warn-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .warn-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14.5px; line-height: 1.5; color: oklch(0.35 0.1 30);
+    }
+    .warn-icon { flex-shrink: 0; margin-top: 2px; }
+    .followup-card {
+      background: #fff; border: 1.5px solid var(--accent); border-radius: 14px;
+      padding: 16px; display: flex; align-items: center; gap: 14px;
+    }
+    .followup-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: oklch(0.93 0.025 195);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: var(--accent);
+    }
+    .followup-when { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .followup-where { font-size: 13px; color: var(--ink-2); margin-top: 3px; line-height: 1.5; }
+    .footer { padding: 20px 22px 40px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 5px; }
+    .footer p { font-family: monospace; font-size: 11px; color: var(--ink-3); letter-spacing: 0.3px; }
+    .disclaimer { font-family: 'IBM Plex Sans Thai', sans-serif !important; font-size: 11.5px !important; line-height: 1.6 !important; margin-top: 6px; }
+    .error-page {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 40px 24px; text-align: center; gap: 14px;
+    }
+    .error-page h2 { font-size: 18px; font-weight: 600; }
+    .error-page p { font-size: 14px; color: var(--ink-3); line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <div class="page" id="app">
+    <div class="error-page">
+      <img src="/assets/chula-logo.png" alt="" style="height:44px">
+      <h2>กำลังโหลด…</h2>
+    </div>
+  </div>
+  <script>
+    var warnIcon = '<svg class="warn-icon" width="16" height="16" viewBox="0 0 16 16"><path d="M8 1.5l6.5 11.5H1.5L8 1.5z" fill="oklch(0.62 0.14 35)"/><rect x="7.2" y="6" width="1.6" height="4.5" fill="#fff" rx="0.4"/><rect x="7.2" y="11.2" width="1.6" height="1.6" fill="#fff" rx="0.4"/></svg>';
+    var calIcon = '<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9h16M8 3v4M14 3v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function render(d) {
+      document.title = esc(d.diagnosisTitle) + ' · คำแนะนำกลับบ้าน';
+      var careHtml = (d.care || []).map(function(c) {
+        return '<li><span class="dot"></span><span>' + esc(c) + '</span></li>';
+      }).join('');
+      var returnHtml = (d.returnIf || []).map(function(r) {
+        return '<li>' + warnIcon + '<span>' + esc(r) + '</span></li>';
+      }).join('');
+      var fu = d.followUp || {};
+      document.getElementById('app').innerHTML =
+        '<div class="header">' +
+          '<img src="/assets/chula-logo.png" alt="โรงพยาบาลจุฬาลงกรณ์ สภากาชาดไทย" class="logo">' +
+          '<div class="issued-at">' + esc(d.issuedAt) + '</div>' +
+        '</div>' +
+        '<div class="hero">' +
+          '<h1 class="diagnosis">' + esc(d.diagnosisTitle) + '</h1>' +
+          '<p class="summary">' + esc(d.summary) + '</p>' +
+        '</div>' +
+        '<section class="section">' +
+          '<div class="section-header"><span class="section-num">01</span><h3>การดูแลตัวที่บ้าน</h3></div>' +
+          '<ul class="care-list">' + careHtml + '</ul>' +
+        '</section>' +
+        '<section class="section">' +
+          '<div class="section-header"><span class="section-num">02</span><h3>กลับมาห้องฉุกเฉินถ้า</h3></div>' +
+          '<div class="warn-box"><ul class="warn-list">' + returnHtml + '</ul></div>' +
+        '</section>' +
+        '<section class="section">' +
+          '<div class="section-header"><span class="section-num">03</span><h3>นัดติดตามอาการ</h3></div>' +
+          '<div class="followup-card">' +
+            '<div class="followup-icon">' + calIcon + '</div>' +
+            '<div>' +
+              '<div class="followup-when">' + esc(fu.when) + '</div>' +
+              '<div class="followup-where">' + esc(fu.where) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</section>' +
+        '<div class="footer">' +
+          '<p>ออกเมื่อ ' + esc(d.issuedAt) + ' · ห้องฉุกเฉิน</p>' +
+          '<p>สร้างโดย AI · ตรวจสอบโดยแพทย์เจ้าของไข้</p>' +
+          '<p class="disclaimer">ข้อมูลนี้เป็นเพียงคำแนะนำเบื้องต้น หากมีเหตุฉุกเฉินโทร 1669 หรือห้องฉุกเฉินทันที</p>' +
+        '</div>';
+    }
+
+    function showError() {
+      document.getElementById('app').innerHTML =
+        '<div class="error-page">' +
+          '<img src="/assets/chula-logo.png" alt="" style="height:44px">' +
+          '<h2>ไม่พบข้อมูลคำแนะนำ</h2>' +
+          '<p>ลิงก์นี้อาจหมดอายุแล้ว หรือเกิดข้อผิดพลาด<br>กรุณาติดต่อเจ้าหน้าที่ห้องฉุกเฉิน</p>' +
+        '</div>';
+    }
+
+    if (window.__DISCHARGE__) {
+      render(window.__DISCHARGE__);
+    } else {
+      showError();
+    }
+  </script>
+</body>
+</html>
