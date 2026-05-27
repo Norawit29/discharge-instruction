@@ -88,6 +88,7 @@ function PatientView({ data, accent, editable, onChange }) {
   };
   const updateFollow = (k, v) => edit && edit({ ...D, followUp: { ...D.followUp, [k]: v } });
   const addItem = (k) => edit && edit({ ...D, [k]: [...D[k], ''] });
+  const removeItem = (k, i) => edit && edit({ ...D, [k]: D[k].filter((_, idx) => idx !== i) });
 
   const Section = ({ title, n, children }) => (
     <section style={{ padding: '0 22px', marginBottom: 28 }}>
@@ -201,6 +202,16 @@ function PatientView({ data, accent, editable, onChange }) {
                   accent={A}
                 />
               </div>
+              {editable && (
+                <button onClick={() => removeItem('care', i)} style={{
+                  flexShrink: 0, background: 'none', border: 'none', cursor: 'pointer',
+                  padding: '2px 0 0', color: 'var(--ink-3)', lineHeight: 1,
+                }} title="ลบ">
+                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                    <path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                  </svg>
+                </button>
+              )}
             </li>
           ))}
         </ul>
@@ -247,6 +258,16 @@ function PatientView({ data, accent, editable, onChange }) {
                     accent={A}
                   />
                 </div>
+                {editable && (
+                  <button onClick={() => removeItem('returnIf', i)} style={{
+                    flexShrink: 0, background: 'none', border: 'none', cursor: 'pointer',
+                    padding: '2px 0 0', color: 'oklch(0.55 0.1 35)', lineHeight: 1,
+                  }} title="ลบ">
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                      <path d="M3 3l9 9M12 3l-9 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                    </svg>
+                  </button>
+                )}
               </li>
             ))}
           </ul>
@@ -265,46 +286,6 @@ function PatientView({ data, accent, editable, onChange }) {
             เพิ่มสัญญาณเตือน
           </button>
         )}
-      </Section>
-
-      {/* Follow-up */}
-      <Section title="นัดติดตามอาการ" n="3">
-        <div style={{
-          background: '#fff',
-          border: `1.5px solid ${A}`,
-          borderRadius: 14,
-          padding: '14px 16px',
-          display: 'flex', alignItems: 'center', gap: 14,
-        }}>
-          <div style={{
-            width: 44, height: 44, borderRadius: 10,
-            background: 'oklch(0.93 0.025 195)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: A, flexShrink: 0,
-          }}>
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-              <rect x="3" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth="1.6"/>
-              <path d="M3 9h16M8 3v4M14 3v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-            </svg>
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>
-              <EditableText
-                value={D.followUp.when}
-                onChange={edit && ((v) => updateFollow('when', v))}
-                accent={A}
-              />
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--ink-2)', marginTop: 2, lineHeight: 1.5 }}>
-              <EditableText
-                value={D.followUp.where}
-                onChange={edit && ((v) => updateFollow('where', v))}
-                multiline asBlock
-                accent={A}
-              />
-            </div>
-          </div>
-        </div>
       </Section>
 
       {/* Footer caretag */}
