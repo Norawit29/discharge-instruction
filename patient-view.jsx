@@ -176,7 +176,7 @@ function PatientView({ data, accent, editable, onChange }) {
       </div>
 
       {/* Care at home */}
-      <Section title="การดูแลตัวที่บ้าน" n="1">
+      <Section title="การดูแลตนเองที่บ้าน" n="1">
         <ul style={{
           margin: 0, padding: 0, listStyle: 'none',
           display: 'flex', flexDirection: 'column', gap: 9,
@@ -232,7 +232,7 @@ function PatientView({ data, accent, editable, onChange }) {
       </Section>
 
       {/* Return precautions */}
-      <Section title="กลับมาห้องฉุกเฉินถ้า" n="2">
+      <Section title="กลับมาห้องฉุกเฉินในกรณีดังต่อไปนี้" n="2">
         <div style={{
           background: 'var(--warn-soft)',
           borderRadius: 14,
