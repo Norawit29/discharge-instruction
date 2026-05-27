@@ -242,6 +242,7 @@ JSON schema (ตอบแค่นี้เท่านั้น):
 }`;
 
 async function callOpenAI(apiKey, form) {
+  if (!apiKey) throw new Error('ไม่พบ OPENAI_API_KEY — กรุณาเพิ่ม key ใน .env แล้วรีสตาร์ท serve.py');
   const range = AGE_RANGES.find(r => r.key === form.ageRange);
   const dxText = form.diagnosis?.en || form.diagnosis?.custom || 'unknown';
 
@@ -958,7 +959,7 @@ function App() {
   }, []);
 
   const [screen, setScreen] = useState('home');
-  const apiKey = window.OPENAI_API_KEY || '';
+  const [apiKey] = useState(() => window.OPENAI_API_KEY || '');
 
   const [formData, setFormData] = useState({
     sex: 'ชาย',
